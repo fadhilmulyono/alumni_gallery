@@ -15,7 +15,7 @@
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="#">SVP Alumni Gallery</a>
+                <a class="navbar-brand" href="index.php">SVP Alumni Gallery</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -31,7 +31,7 @@
             <div class="container">
                 <div class="text-center my-5">
                     <h1 class="fw-bolder">SVP Alumni Association</h1>
-                    <p class="lead mb-0">The Global Network of Sekolah Victory Plus Alumni</p>
+                    <p class="lead mb-0">List of SVP Inaugural Alumni Homecoming 2022 Participants</p>
                 </div>
             </div>
         </header>
@@ -48,11 +48,11 @@
                             $row = $query->fetch_assoc();		
                             do{
                         ?>
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <!-- Blog post-->
                             <div class="card mb-4">
                                 <a href="#!">
-                                    <img style="height:350px;" class="card-img-top" src="./images/photos/<?php echo $row['photo_name'] ?>.jpg" alt="<?php echo $row['photo_name'] ?>" />
+                                    <img style="height:200px;" class="card-img-top" src="./photos/<?php echo $row['photo_name'] ?>.jpg" alt="<?php echo $row['photo_name'] ?>" />
                                 </a>
                                 <div class="card-body">
                                     <div class="small text-muted">Class of <?php echo $row['class_of'] ?></div>

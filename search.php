@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/photo_card.css" rel="stylesheet" />
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -19,8 +20,8 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" aria-current="page" href="index.php">Alumni</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="grade9.php">Grade 9</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.php">Alumni</a></li>
+                        <li class="nav-item"><a class="nav-link" href="grade9.php">Grade 9</a></li>
                         <li class="nav-item"><a class="nav-link" href="homecoming.php">Homecoming</a></li>
                     </ul>
                 </div>
@@ -31,7 +32,7 @@
             <div class="container">
                 <div class="text-center my-5">
                     <h1 class="fw-bolder">SVP Alumni Association</h1>
-                    <p class="lead mb-0"><abbr title="List of SVP Middle School alumni who are not SVP High School alumni.">List of SVP Middle School Alumni</abbr></p>
+                    <p class="lead mb-0">The Global Network of Sekolah Victory Plus Alumni</p>
                 </div>
             </div>
         </header>
@@ -39,68 +40,58 @@
             <div class="row">
                 <?php 
                         include "config/config.php";
-                        $view = 12;
-                        if (isset($_GET['page']))
-                        {
-                            $page_active = $_GET['page'];
-                        }else {				
-                            $page_active = 1;		
-                        }		
-                        $data = ($page_active-1)*$view;	
                 ?>
+                <!-- Side widgets-->
+                <div class="col-lg-4">
+                    <form action="search.php">
+                    <!-- Search widget-->
+                    <div class="card mb-4">
+                        <div class="card-header">Search</div>
+                        <div class="card-body">      
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="button-search" />
+                                <input class="btn btn-primary" id="button-search" type="submit" value="Go!">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <?php $search = $_GET['search']; ?>
+                            Displaying search results by term: <br> <?php echo $search; ?>
+                        </div>
+                    </div>
+                    </form>
+                </div>
                 <!-- Visual Gallery-->
-                <div class="col-lg-12">
+                <div class="col-lg-8">
                     <!-- Nested row for alumni photos-->
                     <div class="row">
                         <?php
                             include "config/config.php";
-                            $sql = "SELECT * FROM grade9_alumni LIMIT $data, $view ";	
+                            $search = $_GET['search'];
+                
+                            $sql = "SELECT * FROM alumni_tbl WHERE name LIKE '%$search%'";	
                             $query = $koneksi->query($sql);			
-                            $row = $query->fetch_assoc();		
+                            $row = $query->fetch_assoc();	
+                            
                             do{
                         ?>
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <!-- Blog post-->
                             <div class="card mb-4">
                                 <a href="#!">
-                                    <img class="card-img-top" src="./images/b.jpg" alt="<?php echo $row['name'] ?>" />
+                                    <img style="height:275px;" class="card-img-top" src="./photos/<?php echo $row['photo_name'] ?>.jpg" alt="<?php echo $row['photo_name'] ?>" />
                                 </a>
                                 <div class="card-body">
+                                    <div class="small text-muted"><?php echo $row['grade'] ?> Class of <?php echo $row['class_of'] ?></div>
                                     <h2 class="card-title h4"><?php echo $row['name'] ?></h2>
+                                    <p class="card-text"><?php if($row['status'] == "In Memoriam"){
+                                        echo "(In Memoriam)";
+                                    } ?></p>
                                 </div>
                             </div>
                         </div>
                         <?php }while($row = $query->fetch_assoc()); ?>
-                    </div>
-                    <!-- Pagination-->
-                    <?php 
-                        $sqltotal = "SELECT * FROM grade9_alumni";
-                        $qtotal = $koneksi->query($sqltotal); 
-                        $total_data = $qtotal->num_rows;
-                        $total_page = ceil($total_data/$view);
-                    ?>
-                    <nav aria-label="Pagination">
-                        <hr class="my-0" />
-                        <ul class="pagination justify-content-center my-4">
-                            <?php for ($i=1; $i<=$total_page; $i++){?>
-                            <!-- Jika Start $i / = page yang aktif -->
-                            <?php if($i == $page_active){?>
-                            <li class="page-item active">
-                                <a class="page-link" href="grade9.php?=<?php echo $i; ?>"><?php echo $i; ?></a></a>
-                            </li>
-                            <!-- END Start $i / = page yang aktif -->                      
-                            <!-- Page Link Untuk Kehalaman Yang Lainnya ------->     
-                            <?php }else { ?>
-                                <li class="page-item">
-                                    <a class="page-link" href="grade9.php?=<?php echo $i; ?>"><?php echo $i; ?></a>
-                                </li>
-                            <?php } ?>
-                            <!-- END Page Link Untuk Kehalaman Yang Lainnya -->                        
-                            <?php } ?>
-                        </ul>
-                    </nav>
+                    </div>  
                 </div>
-                
             </div>
         </div>
         <!-- Footer-->

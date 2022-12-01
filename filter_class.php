@@ -40,18 +40,10 @@
             <div class="row">
                 <?php 
                         include "config/config.php";
-                        $view = 15;
-                        if (isset($_GET['page']))
-                        {
-                            $page_active = $_GET['page'];
-                        }else {				
-                            $page_active = 1;		
-                        }		
-                        $data = ($page_active-1)*$view;	
                 ?>
                 <!-- Side widgets-->
                 <div class="col-lg-4">
-                    <form action="search.php" method="get">
+                    <form action="search.php">
                     <!-- Search widget-->
                     <div class="card mb-4">
                         <div class="card-header">Search</div>
@@ -60,6 +52,10 @@
                                 <input class="form-control" type="text" name="search" placeholder="Search for..." aria-label="Search for..." aria-describedby="button-search" />
                                 <input class="btn btn-primary" id="button-search" type="submit" value="Go!">
                             </div>
+                        </div>
+                        <div class="card-footer">
+                            <?php $filter_class = $_GET['filter_class']; ?>
+                            Displaying filter results by class: <br> <?php echo $filter_class; ?>
                         </div>
                     </div>
                     </form>
@@ -79,7 +75,7 @@
                                             $rowyear = $qyear->fetch_assoc(); 
                                         do { ?>
                                         <option value="<?php echo $rowyear['year']; ?>"><?php echo $rowyear['year']; ?></option>
-                                        <?php } while($rowyear = $qyear->fetch_assoc()); ?>
+                                        <?php }while($rowyear = $qyear->fetch_assoc()); ?>
                                     </select>
                                     <input class="btn btn-info" id="button-search" type="submit" value="Filter">
                                     </form>
@@ -95,26 +91,14 @@
                                             $rowgrade = $qgrade->fetch_assoc(); 
                                         do { ?>
                                         <option value="<?php echo $rowgrade['grade']; ?>"><?php echo $rowgrade['grade']; ?></option>
-                                        <?php } while($rowgrade = $qgrade->fetch_assoc()); ?>
+                                        <?php }while($rowgrade = $qgrade->fetch_assoc()); ?>
                                     </select>
                                     <input class="btn btn-info" id="button-search" type="submit" value="Filter">
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Side widget-->
-                    <div class="card mb-4">
-                        <div class="card-header">Sort by</div>
-                        <div class="card-body">
-                            <select onChange={this.inputHandler} name="sortBy" class="form-control">
-                                <option value="">Default</option>
-                                <option value="recent">Recent Graduates</option>
-                                <option value="nameAZ">Name (Ascending)</option>
-                                <option value="nameZA">Name (Descending)</option>
-                            </select>
-                        </div>
-                    </div>
+                    </div>                
                 </div>
                 <!-- Visual Gallery-->
                 <div class="col-lg-8">
@@ -122,9 +106,12 @@
                     <div class="row">
                         <?php
                             include "config/config.php";
-                            $sql = "SELECT * FROM alumni_tbl LIMIT $data, $view ";	
+                            $filter_class = $_GET['filter_class'];
+                
+                            $sql = "SELECT * FROM alumni_tbl WHERE grade = '$filter_class'";	
                             $query = $koneksi->query($sql);			
-                            $row = $query->fetch_assoc();		
+                            $row = $query->fetch_assoc();	
+                            
                             do{
                         ?>
                         <div class="col-lg-4">
@@ -143,65 +130,7 @@
                             </div>
                         </div>
                         <?php }while($row = $query->fetch_assoc()); ?>
-                    </div>
-                    <!-- Pagination-->
-                    <?php 
-                        $sqltotal = "SELECT * FROM alumni_tbl";
-                        $qtotal = $koneksi->query($sqltotal); 
-                        $total_data = $qtotal->num_rows;
-            
-                        $total_page = ceil($total_data/$view);
-                    ?>
-                    <nav aria-label="Pagination">
-                        <hr class="my-0" />
-                        <?php if ($total_page > 0) { ?>
-                            <ul class="pagination justify-content-center my-4">
-                                <?php if ($page_active > 1){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $page_active-1 ?>"><</a></li>
-                                <?php }; ?>
-
-                                <?php if ($page_active > 3){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=1">1</a></li>
-                                    <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                                <?php }; ?>
-
-                                <?php if ($page_active -2 > 0){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $page_active-2 ?>">
-                                    <?php echo $page_active-2 ?></a></li>
-                                <?php }; ?>
-
-                                <?php if ($page_active -1 > 0){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $page_active-1 ?>">
-                                    <?php echo $page_active-1 ?></a></li>
-                                <?php }; ?>
-
-                                <li class="page-item active" aria-current="page">
-                                    <a class="page-link" href="index.php?page=<?php echo $page ?>">
-                                    <?php echo $page_active ?></a>
-                                </li>
-
-                                <?php if ($page_active+1 < $total_page+1){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $page_active+1 ?>">
-                                    <?php echo $page_active+1 ?></a></li>
-                                <?php }; ?>
-
-                                <?php if ($page_active+2 < $total_page+1){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $page_active+2 ?>">
-                                    <?php echo $page_active+2 ?></a></li>
-                                <?php }; ?>
-
-                                <?php if ($page_active < $total_page-2){ ?>
-                                    <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $total_page ?>">
-                                    <?php echo $total_page ?></a></li>
-                                <?php }; ?>
-
-                                <?php if ($page_active < $total_page){ ?>
-                                    <li class="page-item"><a class="page-link" href="index.php?page=<?php echo $page_active+1 ?>">></a></li>
-                                <?php }; ?>
-                            </ul>
-                        <?php }; ?>
-                    </nav>   
+                    </div>  
                 </div>
             </div>
         </div>
